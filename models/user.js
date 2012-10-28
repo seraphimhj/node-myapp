@@ -20,6 +20,18 @@ var UserSchema = new Schema({
   
   receive_reply_mail: {type: Boolean, default: false },
   receive_at_mail: { type: Boolean, default: false },
+
+  create_at: { type: Date, default: Date.now },
+  update_at: { type: Date, default: Date.now },
+
+  // if is seller or customer
+  is_seller: { type: Boolean, default: false},
+  seller_seats_num: { type: Number, default: 0 },
+
+  // for active user
+  retrieve_time : {type: Number},
+  retrieve_key : {type: String}
+
 });
 
 UserSchema.virtual('avatar_url').get(function () {

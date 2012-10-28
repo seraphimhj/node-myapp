@@ -77,6 +77,7 @@ exports.signup = function(req,res,next){
       user.email = email;
       user.avatar = avatar_url;
       user.active = false;
+      user.is_seller = false;
       user.save(function(err){
         if (err) {
           return next(err);
@@ -109,8 +110,8 @@ exports.showLogin = function(req, res) {
 var notJump = [
   '/active_account', //active page
   '/reset_pass',     //reset password page, avoid to reset twice
-  '/signup',         //regist page
-  '/search_pass'    //serch pass page
+  '/signup',         //register page
+  '/search_pass'     //serch pass page
 ];
 /**
  * Handle user login.
@@ -136,10 +137,12 @@ exports.login = function(req, res, next) {
     if (pass !== user.pass) {
       return res.render('sign/signin', { error:'密码错误。' });
     }
-    if (!user.active) {
-      res.render('sign/signin', { error:'此帐号还没有被激活。' });
-      return;
-    }
+    // 降低门槛：未激活帐号也能登录
+    // if (!user.active) {
+    //   res.render('sign/signin', { error:'此帐号还没有被激活。' });
+    //   return;
+    // }
+    
     // store session cookie
     gen_session(user, res);
     //check at some page just jump to home page 

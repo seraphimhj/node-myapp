@@ -13,6 +13,7 @@ var site = require('./controllers/site');
 var user = require('./controllers/user');
 var message = require('./controllers/message');
 var static = require('./controllers/static');
+var status = require('./controllers/status');
 
 module.exports = function (app) {
   // home page
@@ -39,6 +40,7 @@ module.exports = function (app) {
   app.get('/users/top100', user.top100);
   app.get('/my/messages', message.index);
   app.get('/user/:name/achivement', user.list_topics);
+  app.post('/user/set_seller', user.toggle_seller);
    
   // message
   app.post('/messages/mark_read', message.mark_read);
@@ -46,5 +48,8 @@ module.exports = function (app) {
 
   // static
   app.get('/about', static.about);
+
+  // site status
+  app.get('/status', status.status);
 
 };  

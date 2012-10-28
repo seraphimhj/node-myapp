@@ -3,28 +3,48 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , http = require('http')
-  , path = require('path');
+var express = require('express');
+var routes = require('./routes');
+var http = require('http');
+var path = require('path');
+var config = require('./config').config;
+
+// For Cloud foundry
+var port = (process.env.VMC_APP_PORT || 3000);
+var host = (process.env.VCAP_APP_HOST || 'localhost'); 
 
 var app = express();
 
 app.engine('.html', require('ejs').__express);
 
 app.configure(function(){
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', port);
+    app.set('host', host);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'html');
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
-    app.use(express.cookieParser('your secret here'));
-    app.use(express.session());
+    app.use(express.cookieParser());
+    app.use(express.session({
+      secret: config.session_secret
+    }));
+    app.use(express.csrf()); 
     app.use(app.router);
     app.use(require('stylus').middleware(__dirname + '/public'));
     app.use(express.static(path.join(__dirname, 'public')));
+    // custom middleware
+    app.use(require('./controllers/sign').auth_user);
+     
+});
+
+// set static, dynamic helpers
+app.locals({
+  config: config,
+  csrf: function (req, res) {
+    return req.session ? req.session._csrf : '';
+  }
 });
 
 app.configure('development', function(){
@@ -34,6 +54,6 @@ app.configure('development', function(){
 // routes
 routes(app);
 
-http.createServer(app).listen(app.get('port'), function(){
+http.createServer(app).listen(app.get('port'), app.get('host'), function(){
     console.log("Express server listening on port " + app.get('port'));
 });

@@ -3,61 +3,68 @@
  */
 
 var path = require('path');
+       
+// Mongodb with Cloudfoundry
+if (process.env.VCAP_SERVICES) {
+  var env = JSON.parse(process.env.VCAP_SERVICES);
+  var mongo = env['mongodb-2.0'][0]['credentials'];
+} else {
+  var mongo = {
+      "hostname":"localhost",
+      "port":27017,
+      "username":"",
+      "password":"",
+      "name":"",
+      "db":"db"
+  }
+}
+
+var generate_mongo_url = function(obj) {
+  obj.hostname = (obj.hostname || 'localhost');
+  obj.port = (obj.port || 27017);
+  obj.db = (obj.db || 'test');
+
+  if(obj.username && obj.password) {
+      return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
+  } else {
+      return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
+  }
+}
 
 exports.config = {
     debug: true,
-    name: 'Driver TEST',
-    description: '专业驾校测试题库',
+    name: '排号系统',
+    description: '排号平台，效率生活，优雅生活',
     version: '0.0.1',
 
     // site settings
     site_headers: [
-        '<meta name="author" content="HJian" />',
+        '<meta name="author" content="HuangJian" />',
     ],
-    host: 'localhost',
     site_logo: '', // default is `name`
     site_navs: [
-        // [ path, title, [target=''] ]
         [ '/about', '关于' ],
     ],
     site_static_host: './public', // 静态文件存储域名
     site_enable_search_preview: false, // 开启google search preview
     site_google_search_domain:  '',  // google search preview中要搜索的域名
 
-    db: 'mongodb://127.0.0.1/driver_test',
-    session_secret: 'driver-test',
-    auth_cookie_name: 'driver-test',
-    port: 3000,
+    db: generate_mongo_url(mongo),
+    hostname: 'driver.cloudfoundry.com',
+    port: '26611',
+
+    session_secret: 'whoisyourdaddy',
+    auth_cookie_name: 'godisgreedy',
 
     // 话题列表显示的话题数量
     list_topic_count: 20,
 
-    // site links
-    //site_links: [
-    //{
-    //    'text': 'Node 官方网站',
-    //    'url': 'http://nodejs.org/'
-    //},
-    //{
-    //    'text': 'Node Party',
-    //    'url': 'http://party.cnodejs.net/'
-    //},
-    //{
-    //    'text': 'Node 入门',
-    //    'url': 'http://nodebeginner.org/index-zh-cn.html'
-    //},
-    //{
-    //    'text': 'Node 中文文档',
-    //    'url': 'http://docs.cnodejs.net/cman/'
-    //}
-    //],
-
     // mail SMTP
     mail_port: 25,
-    mail_user: 'club',
-    mail_pass: 'club',
+    mail_user: 'hongrui',
+    mail_pass: '',
     mail_host: 'smtp.126.com',
-    mail_sender: 'club@126.com',
+    mail_sender: 'hongrui@126.com',
     mail_use_authentication: true,
 
     //weibo app key
@@ -71,3 +78,4 @@ exports.config = {
         // { name: 'wordpress_redirect', options: {} }
     ]
 };
+

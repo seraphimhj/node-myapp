@@ -2,7 +2,7 @@
   <div class='panel'>
     <% if (locals.current_user) { %>
     <div class='inner'>
-      <%- partial('user/card',{ object: current_user, as: 'user' }) %>
+      <%- render('user/card.html' ,{ object: current_user, as: 'user' }) %>
     </div>
     <% } else { %>
     <div class='inner'>
@@ -39,7 +39,7 @@
     </div>
     <div class='inner'>
       <% if (hot_tags.length > 0) { %>
-      <%- partial('tag/tag_with_count', { collection: hot_tags, as: 'tag' }) %>
+      <%- render('tag/tag_with_count.html' , { collection: hot_tags, as: 'tag' }) %>
       <% } else { %>
       <p>无</p>
       <% } %>
@@ -56,7 +56,7 @@
     <div class='inner'>
       <% if (hot_topics.length >0) { %>
       <ul class='unstyled'>
-      <%- partial('topic/small', { collection: hot_topics, as: 'topic' }) %>
+      <%- render('topic/small.html', { collection: hot_topics, as: 'topic' }) %>
       </ul>
       <% } else { %>
       <p>无</p>
@@ -74,7 +74,7 @@
     <div class='inner'>
       <% if (no_reply_topics.length > 0) { %>
       <ul class='unstyled'>
-      <%- partial('topic/small', { collection: no_reply_topics, as: 'topic' }) %>
+      <%- render('topic/small.html', { collection: no_reply_topics, as: 'topic' }) %>
       </ul>
       <% } else {  %>
       <p>无</p>
@@ -110,7 +110,7 @@
     <div class='inner'>
       <% if (tops.length > 0) { %>
       <ol>
-      <%- partial('user/top', { collection: tops, as: 'user' }) %>
+      <%- render('user/top', { collection: tops, as: 'user' }) %>
       </ol>
       <% } else { %>
       <p>无</p>
@@ -129,7 +129,7 @@
     <div class='inner'>
       <% if (stars.length > 0) { %>
       <ul class='unstyled'>
-      <%- partial('user/star', { collection: stars, as: 'user' }) %>
+      <%- render('user/star', { collection: stars, as: 'user' }) %>
       </ul>
       <% } else { %>
       <p>无</p>
