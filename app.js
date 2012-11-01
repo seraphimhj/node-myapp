@@ -4,9 +4,10 @@
  */
 
 var express = require('express');
-var routes = require('./routes');
+var partials = require('express-partials');
 var http = require('http');
 var path = require('path');
+var routes = require('./routes');
 var config = require('./config').config;
 
 // For Cloud foundry
@@ -27,11 +28,11 @@ app.configure(function(){
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
+    app.use(partials());
     app.use(express.session({
       secret: config.session_secret
     }));
     app.use(express.csrf()); 
-    app.use(app.router);
     app.use(require('stylus').middleware(__dirname + '/public'));
     app.use(express.static(path.join(__dirname, 'public')));
     // custom middleware
@@ -39,7 +40,6 @@ app.configure(function(){
      
 });
 
-// set static, dynamic helpers
 app.locals({
   config: config,
   csrf: function (req, res) {
@@ -54,6 +54,10 @@ app.configure('development', function(){
 // routes
 routes(app);
 
-http.createServer(app).listen(app.get('port'), app.get('host'), function(){
+if (process.env.MODE_ENV !== 'test') {  
+  http.createServer(app).listen(app.get('port'), app.get('host'), function(){
     console.log("Express server listening on port " + app.get('port'));
-});
+  }); 
+}
+
+module.exports = app;

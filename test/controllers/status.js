@@ -5,7 +5,6 @@ describe('controllers/status.js', function () {
     app.listen(0, done);
   });
   after(function () {
-    app.close();
   });
 
   it('should /status 200', function (done) {

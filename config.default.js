@@ -3,104 +3,79 @@
  */
 
 var path = require('path');
+       
+// Mongodb with Cloudfoundry
+if (process.env.VCAP_SERVICES) {
+  var env = JSON.parse(process.env.VCAP_SERVICES);
+  var mongo = env['mongodb-2.0'][0]['credentials'];
+} else {
+  var mongo = {
+      "hostname":"localhost",
+      "port":27017,
+      "username":"",
+      "password":"",
+      "name":"",
+      "db":"db"
+  }
+}
+
+var generate_mongo_url = function(obj) {
+  obj.hostname = (obj.hostname || 'localhost');
+  obj.port = (obj.port || 27017);
+  obj.db = (obj.db || 'test');
+
+  if(obj.username && obj.password) {
+      return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
+  } else {
+      return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
+  }
+}
 
 exports.config = {
     debug: true,
-    name: 'Driver TEST',
-    description: '专业驾校测试题库',
+    name: '排号系统',
+    description: '排号平台，效率生活，优雅生活',
     version: '0.0.1',
 
-  // site settings
-  site_headers: [
-    '<meta name="author" content="HJian" />',
-  ],
-  host: 'localhost',
-  site_logo: '', // default is `name`
-  site_navs: [
-    // [ path, title, [target=''] ]
-    [ '/about', '关于' ],
-  ],
-  site_static_host: '', // 静态文件存储域名
-  site_enable_search_preview: false, // 开启google search preview
-  site_google_search_domain:  '',  // google search preview中要搜索的域名
+    // site settings
+    site_headers: [
+        '<meta name="author" content="HuangJian" />',
+    ],
+    site_logo: '', // default is `name`
+    site_navs: [
+        [ '/about', '关于' ],
+    ],
+    site_static_host: './public', // 静态文件存储域名
+    site_enable_search_preview: false, // 开启google search preview
+    site_google_search_domain:  '',  // google search preview中要搜索的域名
 
-  upload_dir: path.join(__dirname, 'public', 'user_data', 'images'),
+    db: generate_mongo_url(mongo),
+    hostname: 'driver.cloudfoundry.com',
+    port: '26611',
 
-  db: 'mongodb://127.0.0.1/driver_test',
-  session_secret: 'driver-test',
-  auth_cookie_name: 'driver-test',
-  port: 3000,
+    session_secret: 'whoisyourdaddy',
+    auth_cookie_name: 'godisgreedy',
 
-  // 话题列表显示的话题数量
-  list_topic_count: 20,
+    // 话题列表显示的话题数量
+    list_topic_count: 20,
 
-  // RSS
-  rss: {
-    title: 'Driver TEST',
-    link: 'http://driver.cloudfoundry.com',
-    language: 'zh-cn',
-    description: '专业驾校测试题库',
+    // mail SMTP
+    mail_port: 25,
+    mail_user: 'hongrui',
+    mail_pass: '',
+    mail_host: 'smtp.126.com',
+    mail_sender: 'hongrui@126.com',
+    mail_use_authentication: true,
 
-    //最多获取的RSS Item数量
-    max_rss_items: 50
-  },
- 
-  // site links
-  site_links: [
-    {
-      'text': 'Node 官方网站',
-      'url': 'http://nodejs.org/'
-    },
-    {
-      'text': 'Node Party',
-      'url': 'http://party.cnodejs.net/'
-    },
-    {
-      'text': 'Node 入门',
-      'url': 'http://nodebeginner.org/index-zh-cn.html'
-    },
-    {
-      'text': 'Node 中文文档',
-      'url': 'http://docs.cnodejs.net/cman/'
-    }
-  ],
+    //weibo app key
+    weibo_key: 10000000,
 
-  // sidebar ads
-  side_ads: [
-    {
-      'url': 'http://www.upyun.com/?utm_source=nodejs&utm_medium=link&utm_campaign=upyun&md=nodejs',
-      'image': 'http://site-cnode.b0.upaiyun.com/images/upyun_logo.png',
-      'text': ''
-    },
-    {
-      'url': 'http://ruby-china.org/?utm_source=nodejs&utm_medium=link&utm_campaign=upyun&md=nodejs',
-      'image': 'http://site-cnode.b0.upaiyun.com/images/ruby_china_logo.png',
-      'text': ''
-    },
-    {
-      'url': 'http://adc.taobao.com/',
-      'image': 'http://adc.taobao.com/bundles/devcarnival/images/d2_180x250.jpg',
-      'text': ''
-    }
-  ],
+    // admin 可删除话题，编辑标签，设某人为达人
+    admins: { admin: true },
 
-  // mail SMTP
-  mail_port: 25,
-  mail_user: 'club',
-  mail_pass: 'club',
-  mail_host: 'smtp.126.com',
-  mail_sender: 'club@126.com',
-  mail_use_authentication: true,
-  
-  //weibo app key
-  weibo_key: 10000000,
-
-  // admin 可删除话题，编辑标签，设某人为达人
-  admins: { admin: true },
-
-  // [ { name: 'plugin_name', options: { ... }, ... ]
-  plugins: [
-    // { name: 'onehost', options: { host: 'localhost.cnodejs.org' } },
-    // { name: 'wordpress_redirect', options: {} }
-  ]
+    // [ { name: 'plugin_name', options: { ... }, ... ]
+    plugins: [
+        // { name: 'wordpress_redirect', options: {} }
+    ]
 };
+

@@ -18,7 +18,6 @@ describe('controllers/user.js', function () {
     app.listen(0, done);
   });
   after(function () {
-    app.close();
   });
 
   it('/user/testuser1 should 200', function (done) {

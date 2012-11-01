@@ -1,26 +1,34 @@
+// For Seller Seats Info
+// display:
+//   total_seats_num
+//   current_seats_num
+//
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
   
-var SeatSchema = new Schema({
+var SeatClusterSchema = new Schema({
   // seat identify
-  name: { type: String, unique: true, index: true },
+  name: { type: String, unique: true },
   // owner is seller
-  owner_id: { type: ObjectId },
+  owner: { type: ObjectId, index: true },
+  // create time
+  create_tm: { type: Date, default: Date.now }, 
+
   // next serving number
-  current_num: { type: Number, default: 0 },
-  // queue number
-  current_cnt: { type: Number, default: 0 },
-  // remain waiting number
-  waiting_num: { type: Number, default: 0 },
-  // total serving count one day
-  server_cnt: { type: Number, default: 0 },
+  next_id: { type: Number, default: 0 },
+  // queue 
+  queue_length: { type: Number, default: 0 },
+
+  // For Statistic
+  // total cnt
+  serving_cnt: {type: Number, default: 0 },
+  // or from log
   // reading count
   pageview_cnt: { type: Number, default: 0 },
   // reading user count
   userview_cnt: { type: Number, default: 0 },
-  // create time
-  create_tm: { type: Date, default: Date.now },
+ 
 });
 
-mongoose.model('Seat', SeatSchema);
+mongoose.model('SeatCluster', SeatClusterSchema);

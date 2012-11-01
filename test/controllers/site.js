@@ -18,18 +18,17 @@ describe('controllers/site.js', function () {
     app.listen(0, done);
   });
   after(function () {
-    app.close();
   });
 
   it('should /index 200', function (done) {
-    app.request().get('/').end(function (res) {
+    app.get('/').end(function (res) {
       res.should.status(200);
       done();
     });
   });
 
   it('should /?q=neverexistskeyword 200', function (done) {
-    app.request().get('/?q=neverexistskeyword').end(function (res) {
+    app.get('/?q=neverexistskeyword').end(function (res) {
       res.should.status(200);
       res.body.toString().should.include('无话题');
       done();
@@ -37,7 +36,7 @@ describe('controllers/site.js', function () {
   });
 
   it('should /?q=neverexistskeyword&q=foo2 200', function (done) {
-    app.request().get('/?q=neverexistskeyword&q=foo2').end(function (res) {
+    app.route('/?q=neverexistskeyword&q=foo2').end(function (res) {
       res.should.status(200);
       res.body.toString().should.include('无话题');
       done();
